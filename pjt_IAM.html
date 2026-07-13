@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I AM : 나의 귀여운 메이트들</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 귀여운 폰트 적용 (Google Fonts - Jua) -->
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Jua', sans-serif;
+            background-color: #fff0f5; /* 부드러운 핑크빛 배경 */
+            background-image: radial-gradient(#ffd1dc 1px, transparent 0);
+            background-size: 20px 20px; /* 귀여운 도트 패턴 */
+            overflow-x: hidden;
+        }
+
+        /* 통통 튀는 애니메이션 */
+        @keyframes bounce-soft {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-bounce-soft {
+            animation: bounce-soft 2s ease-in-out infinite;
+        }
+
+        /* 뽑기 상자 흔들리는 애니메이션 */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        .animate-shake {
+            animation: shake 0.5s;
+            animation-iteration-count: infinite;
+        }
+
+        /* 팝업 등장 애니메이션 */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-content {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        
+        /* 카드 호버 효과 */
+        .character-card {
+            transition: all 0.3s ease;
+        }
+        .character-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased min-h-screen flex flex-col relative">
+
+    <header class="w-full text-center py-10 px-4 mt-4">
+        <div class="inline-block bg-white rounded-full px-6 py-2 shadow-sm mb-4 text-pink-500 font-bold tracking-wider text-sm">
+            PROJECT: I AM
+        </div>
+        <h1 class="text-4xl md:text-6xl text-gray-800 mb-2 drop-shadow-sm">나의 귀여운 메이트들 🐾</h1>
+        <p class="text-lg md:text-xl text-gray-600 mt-4 max-w-2xl mx-auto leading-relaxed">
+            바쁜 일상 속, 나에게 작은 힐링과 즐거움을 주는 최애 캐릭터들을 소개합니다. <br class="hidden md:block">
+            농담곰과 치이카와 친구들이 전해주는 따뜻한 에너지를 받아가세요!
+        </p>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 w-full max-w-5xl">
+        
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+            <!-- 농담곰 카드 -->
+            <div class="character-card bg-white rounded-[3rem] p-8 shadow-lg border-4 border-yellow-100 flex flex-col items-center cursor-pointer relative overflow-hidden" onclick="openModal('nongdamgom')">
+                <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-yellow-50 to-transparent"></div>
+                <div class="text-8xl mb-6 z-10 animate-bounce-soft">🐻</div>
+                <h2 class="text-3xl text-yellow-600 z-10 mb-2">농담곰 (Jjoke Bear)</h2>
+                <p class="text-gray-500 text-center z-10">먹는 것을 사랑하고, 때로는 엉뚱하지만 그 자체로 위로가 되는 듬직한 매력!</p>
+                <button class="mt-6 bg-yellow-400 hover:bg-yellow-500 text-white py-2 px-6 rounded-full shadow-md transition-colors z-10">자세히 보기</button>
+            </div>
+
+            <!-- 치이카와 카드 -->
+            <div class="character-card bg-white rounded-[3rem] p-8 shadow-lg border-4 border-pink-100 flex flex-col items-center cursor-pointer relative overflow-hidden" onclick="openModal('chiikawa')">
+                <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-pink-50 to-transparent"></div>
+                <div class="text-8xl mb-6 z-10 animate-bounce-soft" style="animation-delay: 1s;">🐹🎀</div>
+                <h2 class="text-3xl text-pink-500 z-10 mb-2">치이카와 (먼작귀)</h2>
+                <p class="text-gray-500 text-center z-10">작고 귀엽지만, 매일매일 열심히 살아가는 모습이 너무나도 사랑스러운 친구!</p>
+                <button class="mt-6 bg-pink-400 hover:bg-pink-500 text-white py-2 px-6 rounded-full shadow-md transition-colors z-10">자세히 보기</button>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-[3rem] p-8 md:p-12 shadow-xl border-4 border-blue-50 text-center relative overflow-hidden max-w-3xl mx-auto mb-10">
+            <div class="absolute top-[-50px] right-[-50px] text-blue-100 opacity-50 text-9xl">✨</div>
+            <div class="absolute bottom-[-50px] left-[-50px] text-pink-100 opacity-50 text-9xl">🍀</div>
+            
+            <h2 class="text-3xl md:text-4xl text-gray-800 mb-4 relative z-10">오늘의 먼작귀 운세 뽑기! 🔮</h2>
+            <p class="text-gray-500 mb-8 relative z-10">버튼을 눌러 오늘의 나와 찰떡인 캐릭터와 행운의 메시지를 확인해보세요.</p>
+            
+            <!-- 뽑기 상자 아이콘 -->
+            <div id="gachaBox" class="text-8xl mb-8 cursor-pointer transition-transform z-10 relative inline-block">
+                🎁
+            </div>
+
+            <div class="relative z-10">
+                <button id="gachaBtn" class="bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600 text-white text-xl py-4 px-10 rounded-full shadow-lg transform transition hover:scale-105 active:scale-95 font-bold">
+                    운세 뽑기 시작!
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="w-full text-center py-6 text-gray-400 text-sm mt-auto pb-10">
+        &copy; 2026 I AM Project. All cute rights reserved.
+    </footer>
+
+    <!-- 오버레이 및 모달들 -->
+    <div id="overlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden z-40 items-center justify-center p-4">
+        
+        <!-- 농담곰 모달 -->
+        <div id="modal-nongdamgom" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden z-50">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
+            <div class="text-center">
+                <div class="text-7xl mb-4">🐻🍜</div>
+                <h3 class="text-3xl text-yellow-600 mb-4">농담곰 (Nongdamgom)</h3>
+                <div class="bg-yellow-50 rounded-2xl p-4 text-left text-gray-700 leading-relaxed text-lg">
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>특징:</strong> 느긋하고 먹는 것을 좋아함.</li>
+                        <li><strong>나와의 연결고리:</strong> 맛있는 것을 먹으며 힐링하는 나의 모습과 똑 닮았어요! 특히 여행가서 현지 맛집을 탐방할 때의 제 모습입니다.</li>
+                        <li><strong>명대사:</strong> (우물우물...)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 치이카와 모달 -->
+        <div id="modal-chiikawa" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden z-50">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
+            <div class="text-center">
+                <div class="text-7xl mb-4">🐹💦</div>
+                <h3 class="text-3xl text-pink-500 mb-4">치이카와 (Chiikawa)</h3>
+                <div class="bg-pink-50 rounded-2xl p-4 text-left text-gray-700 leading-relaxed text-lg">
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>특징:</strong> 겁이 많지만 친구들과 함께 씩씩하게 이겨냄.</li>
+                        <li><strong>나와의 연결고리:</strong> 처음엔 어렵지만 꾸준히 노력하는 나의 '갓생' 메이트! 외국어 공부나 수영을 처음 배울 때의 저와 비슷해요.</li>
+                        <li><strong>명대사:</strong> 와앗...! (에엣?!)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 운세 가챠 결과 모달 -->
+        <div id="modal-gachaResult" class="modal-content bg-white w-full max-w-lg rounded-3xl p-8 shadow-2xl relative hidden z-50 text-center border-8 border-transparent">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
+            
+            <p class="text-gray-500 mb-2 mt-4 text-lg">오늘 당신과 함께할 메이트는?</p>
+            <div id="gachaEmoji" class="text-8xl mb-6 mt-4 animate-bounce-soft">❓</div>
+            <h3 id="gachaName" class="text-4xl mb-4 font-bold text-gray-800">캐릭터 이름</h3>
+            
+            <div class="bg-gray-50 rounded-2xl p-6 shadow-inner">
+                <p id="gachaMessage" class="text-xl text-gray-700 leading-relaxed">
+                    여기에 운세 메시지가 출력됩니다.
+                </p>
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <span class="text-sm text-gray-500">🍀 럭키 아이템: </span>
+                    <span id="gachaItem" class="font-bold text-blue-500">아이템</span>
+                </div>
+            </div>
+            
+            <button onclick="closeModal()" class="mt-8 bg-gray-800 hover:bg-gray-900 text-white w-full py-3 rounded-full text-lg transition">확인했습니다!</button>
+        </div>
+    </div>
+
+    <script>
+        // DOM 요소 캐싱
+        const overlay = document.getElementById('overlay');
+        const modalNongdamgom = document.getElementById('modal-nongdamgom');
+        const modalChiikawa = document.getElementById('modal-chiikawa');
+        const modalGachaResult = document.getElementById('modal-gachaResult');
+        
+        const gachaBox = document.getElementById('gachaBox');
+        const gachaBtn = document.getElementById('gachaBtn');
+        
+        const gachaEmoji = document.getElementById('gachaEmoji');
+        const gachaName = document.getElementById('gachaName');
+        const gachaMessage = document.getElementById('gachaMessage');
+        const gachaItem = document.getElementById('gachaItem');
+
+        // 가챠 데이터 베이스
+        const gachaData = [
+            {
+                name: "치이카와 (먼작귀)",
+                emoji: "🐹🎀",
+                color: "#fbcfe8", // pink-200
+                message: "오늘은 작지만 확실한 용기가 솟아나는 날! 어려운 일도 차근차근 해낼 수 있어요.",
+                item: "달콤한 푸딩 🍮"
+            },
+            {
+                name: "하치와레 (가르마)",
+                emoji: "🐱📸",
+                color: "#bfdbfe", // blue-200
+                message: "어떻게든 될 거야! 긍정적인 에너지가 가득해서 주변 사람들에게도 행복을 줄 수 있는 하루!",
+                item: "필름 카메라 📷"
+            },
+            {
+                name: "우사기 (토끼)",
+                emoji: "🐰🌭",
+                color: "#fef08a", // yellow-200
+                message: "우라라라라!! 넘치는 활력으로 밀린 일들을 순식간에 해치울 수 있는 엄청난 파워가 생깁니다!",
+                item: "길쭉한 소시지 🌭"
+            },
+            {
+                name: "농담곰",
+                emoji: "🐻🍜",
+                color: "#e5e7eb", // gray-200
+                message: "복잡한 생각은 금물! 맛있는 것을 먹고 푹 쉬는 게 최고입니다. 소소한 행복을 충분히 즐기세요.",
+                item: "따끈한 라면 🍜"
+            },
+            {
+                name: "퍼그 선배",
+                emoji: "🐶🕶️",
+                color: "#d1d5db", // gray-300
+                message: "오늘은 당신의 센스가 빛을 발하는 날! 여유로운 태도로 멋진 하루를 보내보세요.",
+                item: "선글라스 🕶️"
+            }
+        ];
+
+        let isGachaRolling = false;
+
+        // 모달 열기 함수
+        function openModal(type) {
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            
+            // 모든 모달 숨기기
+            modalNongdamgom.classList.add('hidden');
+            modalChiikawa.classList.add('hidden');
+            modalGachaResult.classList.add('hidden');
+
+            // 선택된 모달 보이기
+            if (type === 'nongdamgom') modalNongdamgom.classList.remove('hidden');
+            if (type === 'chiikawa') modalChiikawa.classList.remove('hidden');
+            if (type === 'gacha') modalGachaResult.classList.remove('hidden');
+        }
+
+        // 모달 닫기 함수
+        function closeModal() {
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+            
+            modalNongdamgom.classList.add('hidden');
+            modalChiikawa.classList.add('hidden');
+            modalGachaResult.classList.add('hidden');
+        }
+
+        // 오버레이 클릭 시 모달 닫기
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                closeModal();
+            }
+        });
+
+        // 가챠 실행 로직
+        function rollGacha() {
+            if (isGachaRolling) return;
+            isGachaRolling = true;
+
+            // 버튼 비활성화 및 텍스트 변경
+            gachaBtn.disabled = true;
+            gachaBtn.innerText = "두근두근 뽑는 중...!";
+            gachaBtn.classList.add('opacity-70', 'cursor-not-allowed');
+
+            // 상자 흔들기 애니메이션 추가
+            gachaBox.classList.add('animate-shake');
+
+            // 1.5초 후 결과 표시
+            setTimeout(() => {
+                // 애니메이션 제거
+                gachaBox.classList.remove('animate-shake');
+                
+                // 랜덤 데이터 선택
+                const randomIndex = Math.floor(Math.random() * gachaData.length);
+                const result = gachaData[randomIndex];
+
+                // 결과 데이터 바인딩
+                gachaEmoji.innerText = result.emoji;
+                gachaName.innerText = result.name;
+                gachaMessage.innerText = `"${result.message}"`;
+                gachaItem.innerText = result.item;
+                
+                // 모달 테두리 색상 동적 변경
+                modalGachaResult.style.borderColor = result.color;
+
+                // 모달 띄우기
+                openModal('gacha');
+
+                // 버튼 상태 복구
+                gachaBtn.disabled = false;
+                gachaBtn.innerText = "운세 뽑기 시작!";
+                gachaBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                
+                isGachaRolling = false;
+            }, 1500); // 1.5초 애니메이션 대기
+        }
+
+        // 가챠 버튼 이벤트 리스너 추가
+        gachaBtn.addEventListener('click', rollGacha);
+        gachaBox.addEventListener('click', rollGacha);
+    </script>
+</body>
+</html>
