@@ -5,16 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>I AM : 나의 귀여운 메이트들</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // 클래스 기반 다크모드 활성화
+        }
+    </script>
     <!-- 귀여운 폰트 적용 (Google Fonts - Jua) -->
     <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     
     <style>
+        /* 커스텀 마우스 커서 전체 적용 */
+        * {
+            cursor: url('https://i.postimg.cc/SxWPGm8K/cursor.png') 16 16, auto !important;
+        }
+
         body {
             font-family: 'Jua', sans-serif;
-            background-color: #fff0f5; /* 부드러운 핑크빛 배경 */
+            background-color: #fff0f5; /* 라이트 모드 배경 */
             background-image: radial-gradient(#ffd1dc 1px, transparent 0);
-            background-size: 20px 20px; /* 귀여운 도트 패턴 */
+            background-size: 20px 20px;
             overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* 다크 모드 전역 스타일 */
+        body.dark {
+            background-color: #111827; /* Tailwind gray-900 */
+            background-image: radial-gradient(#374151 1px, transparent 0);
+            color: #f3f4f6;
+        }
+
+        /* 다크모드 시 카드, 모달 등 배경 보정 */
+        .dark .bg-white { background-color: #1f2937 !important; border-color: #374151 !important; }
+        .dark .text-gray-800 { color: #f9fafb !important; }
+        .dark .text-gray-700 { color: #e5e7eb !important; }
+        .dark .text-gray-600 { color: #d1d5db !important; }
+        .dark .text-gray-500 { color: #9ca3af !important; }
+        
+        .dark .bg-gray-50, .dark .bg-yellow-50, .dark .bg-orange-50, 
+        .dark .bg-pink-50, .dark .bg-blue-50, .dark .bg-red-50, 
+        .dark .bg-amber-50, .dark .bg-slate-50 {
+            background-color: #374151 !important;
         }
 
         /* 통통 튀는 애니메이션 */
@@ -26,7 +57,7 @@
             animation: bounce-soft 2s ease-in-out infinite;
         }
 
-        /* 뽑기 상자 흔들리는 애니메이션 */
+        /* 흔들리는 애니메이션 */
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -45,7 +76,6 @@
             animation-iteration-count: infinite;
         }
 
-        /* 팝업 등장 애니메이션 */
         @keyframes popIn {
             0% { opacity: 0; transform: scale(0.8) translateY(20px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
@@ -54,7 +84,6 @@
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
         
-        /* 카드 호버 효과 */
         .character-card {
             transition: all 0.3s ease;
         }
@@ -66,12 +95,22 @@
 </head>
 <body class="text-gray-800 antialiased min-h-screen flex flex-col relative">
 
-    <header class="w-full text-center py-10 px-4 mt-4">
-        <div class="inline-block bg-white rounded-full px-6 py-2 shadow-sm mb-4 text-pink-500 font-bold tracking-wider text-sm">
+    <!-- 최상단 토글 버튼 (언어 및 다크모드) -->
+    <div class="absolute top-4 right-4 flex gap-3 z-50">
+        <button id="langToggle" class="bg-white text-gray-800 px-4 py-2 rounded-full shadow-md font-bold hover:bg-gray-100 transition duration-300 border-2 border-transparent">
+            🌐 EN
+        </button>
+        <button id="themeToggle" class="bg-white text-gray-800 px-4 py-2 rounded-full shadow-md font-bold hover:bg-gray-100 transition duration-300 border-2 border-transparent text-xl flex items-center justify-center">
+            🌙
+        </button>
+    </div>
+
+    <header class="w-full text-center py-12 px-4 mt-8">
+        <div data-i18n="proj_tag" class="inline-block bg-white dark:bg-gray-800 rounded-full px-6 py-2 shadow-sm mb-4 text-pink-500 font-bold tracking-wider text-sm border border-pink-100 dark:border-gray-700">
             PROJECT: I AM
         </div>
-        <h1 class="text-4xl md:text-5xl text-gray-800 mb-2 drop-shadow-sm font-bold">제가 좋아하는 캐릭터를 소개합니다 🐾</h1>
-        <p class="text-lg md:text-xl text-gray-600 mt-4 max-w-2xl mx-auto leading-relaxed">
+        <h1 data-i18n="main_title" class="text-4xl md:text-5xl text-gray-800 mb-4 drop-shadow-sm font-bold">제가 좋아하는 캐릭터를 소개합니다 🐾</h1>
+        <p data-i18n="main_desc" class="text-lg md:text-xl text-gray-600 mt-4 max-w-2xl mx-auto leading-relaxed">
             바쁜 일상 속, 나에게 작은 힐링과 즐거움을 주는 최애 캐릭터들을 소개합니다. <br class="hidden md:block">
             농담곰과 치이카와 친구들이 전해주는 따뜻한 에너지를 받아가세요!
         </p>
@@ -80,240 +119,242 @@
     <main class="flex-grow container mx-auto px-4 py-8 w-full max-w-6xl">
         
         <div class="mb-16">
-            <h2 class="text-3xl font-bold text-gray-700 mb-8 border-b-4 border-yellow-200 inline-block pb-2">🐻 농담곰 캐릭터들</h2>
+            <h2 data-i18n="sec1_title" class="text-3xl font-bold text-gray-700 mb-8 border-b-4 border-yellow-200 inline-block pb-2">🐻 농담곰 캐릭터들</h2>
             <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- 농담곰 -->
-                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-yellow-100 flex flex-col items-center cursor-pointer relative overflow-hidden" onclick="openModal('nongdamgom')">
-                    <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-yellow-50 to-transparent"></div>
+                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-yellow-100 flex flex-col items-center relative overflow-hidden" onclick="openModal('nongdamgom')">
                     <img src="https://i.postimg.cc/1X2p6ZXN/damgom1.jpg" alt="농담곰" class="w-32 h-32 object-cover rounded-full border-4 border-white shadow-md z-10 mb-4 animate-bounce-soft">
-                    <h3 class="text-2xl text-yellow-600 z-10 mb-2 font-bold">농담곰</h3>
-                    <p class="text-gray-500 text-center z-10 text-sm">먹보이자 느긋함의 대명사</p>
+                    <h3 data-i18n="ndg_name" class="text-2xl text-yellow-600 z-10 mb-2 font-bold">농담곰</h3>
+                    <p data-i18n="ndg_sub" class="text-gray-500 text-center z-10 text-sm">먹보이자 느긋함의 대명사</p>
                 </div>
                 <!-- 퍼그 -->
-                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-gray-100 flex flex-col items-center cursor-pointer relative overflow-hidden" onclick="openModal('pug')">
-                    <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-gray-50 to-transparent"></div>
+                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-gray-100 flex flex-col items-center relative overflow-hidden" onclick="openModal('pug')">
                     <img src="https://i.postimg.cc/x8hKHS8K/pugg1.jpg" alt="퍼그" class="w-32 h-32 object-cover rounded-full border-4 border-white shadow-md z-10 mb-4 animate-bounce-soft" style="animation-delay: 0.2s;">
-                    <h3 class="text-2xl text-gray-600 z-10 mb-2 font-bold">퍼그 선배</h3>
-                    <p class="text-gray-500 text-center z-10 text-sm">선글라스가 매력적인 듬직한 선배</p>
+                    <h3 data-i18n="pug_name" class="text-2xl text-gray-600 z-10 mb-2 font-bold">퍼그 선배</h3>
+                    <p data-i18n="pug_sub" class="text-gray-500 text-center z-10 text-sm">선글라스가 매력적인 듬직한 선배</p>
                 </div>
                 <!-- 고로케 -->
-                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-orange-100 flex flex-col items-center cursor-pointer relative overflow-hidden" onclick="openModal('goroke')">
-                    <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-orange-50 to-transparent"></div>
+                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-orange-100 flex flex-col items-center relative overflow-hidden" onclick="openModal('goroke')">
                     <img src="https://i.postimg.cc/nrgv7trD/goroke1.jpg" alt="고로케" class="w-32 h-32 object-cover rounded-full border-4 border-white shadow-md z-10 mb-4 animate-bounce-soft" style="animation-delay: 0.4s;">
-                    <h3 class="text-2xl text-orange-500 z-10 mb-2 font-bold">고로케</h3>
-                    <p class="text-gray-500 text-center z-10 text-sm">겉바속촉! 소심하지만 정 많은 친구</p>
+                    <h3 data-i18n="grk_name" class="text-2xl text-orange-500 z-10 mb-2 font-bold">고로케</h3>
+                    <p data-i18n="grk_sub" class="text-gray-500 text-center z-10 text-sm">겉바속촉! 소심하지만 정 많은 친구</p>
                 </div>
             </section>
         </div>
 
         <div class="mb-20">
-            <h2 class="text-3xl font-bold text-gray-700 mb-8 border-b-4 border-pink-200 inline-block pb-2">🐹 치이카와 캐릭터들</h2>
+            <h2 data-i18n="sec2_title" class="text-3xl font-bold text-gray-700 mb-8 border-b-4 border-pink-200 inline-block pb-2">🐹 치이카와 캐릭터들</h2>
             <section class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <!-- 치이카와 -->
-                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-pink-100 flex flex-col items-center cursor-pointer relative overflow-hidden" onclick="openModal('chiikawa')">
+                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-pink-100 flex flex-col items-center relative overflow-hidden" onclick="openModal('chiikawa')">
                     <img src="https://i.postimg.cc/C5XjDV5z/chiikawa1.jpg" alt="치이카와" class="w-32 h-32 object-cover rounded-full border-4 border-white shadow-md z-10 mb-4 animate-bounce-soft">
-                    <h3 class="text-2xl text-pink-500 z-10 mb-1 font-bold">치이카와</h3>
-                    <p class="text-gray-500 text-center z-10 text-sm">작고 귀여운 노력파</p>
+                    <h3 data-i18n="cw_name" class="text-2xl text-pink-500 z-10 mb-1 font-bold">치이카와</h3>
+                    <p data-i18n="cw_sub" class="text-gray-500 text-center z-10 text-sm">작고 귀여운 노력파</p>
                 </div>
                 <!-- 하치와레 -->
-                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-blue-100 flex flex-col items-center cursor-pointer relative overflow-hidden" onclick="openModal('hachiware')">
+                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-blue-100 flex flex-col items-center relative overflow-hidden" onclick="openModal('hachiware')">
                     <img src="https://i.postimg.cc/Zn2r3hn3/hachiware1.jpg" alt="하치와레" class="w-32 h-32 object-cover rounded-full border-4 border-white shadow-md z-10 mb-4 animate-bounce-soft" style="animation-delay: 0.1s;">
-                    <h3 class="text-2xl text-blue-500 z-10 mb-1 font-bold">하치와레</h3>
-                    <p class="text-gray-500 text-center z-10 text-sm">긍정 에너지 가득한 고양이</p>
+                    <h3 data-i18n="hw_name" class="text-2xl text-blue-500 z-10 mb-1 font-bold">하치와레</h3>
+                    <p data-i18n="hw_sub" class="text-gray-500 text-center z-10 text-sm">긍정 에너지 가득한 고양이</p>
                 </div>
                 <!-- 우사기 -->
-                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-yellow-200 flex flex-col items-center cursor-pointer relative overflow-hidden" onclick="openModal('usagi')">
+                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-yellow-200 flex flex-col items-center relative overflow-hidden" onclick="openModal('usagi')">
                     <img src="https://i.postimg.cc/C5XjDV5H/usagi1.jpg" alt="우사기" class="w-32 h-32 object-cover rounded-full border-4 border-white shadow-md z-10 mb-4 animate-bounce-soft" style="animation-delay: 0.2s;">
-                    <h3 class="text-2xl text-yellow-500 z-10 mb-1 font-bold">우사기</h3>
-                    <p class="text-gray-500 text-center z-10 text-sm">우라라라! 자유로운 영혼</p>
+                    <h3 data-i18n="us_name" class="text-2xl text-yellow-500 z-10 mb-1 font-bold">우사기</h3>
+                    <p data-i18n="us_sub" class="text-gray-500 text-center z-10 text-sm">우라라라! 자유로운 영혼</p>
                 </div>
                 <!-- 카니 -->
-                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-red-100 flex flex-col items-center cursor-pointer relative overflow-hidden" onclick="openModal('kani')">
+                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-red-100 flex flex-col items-center relative overflow-hidden" onclick="openModal('kani')">
                     <img src="https://i.postimg.cc/J0vbJW0X/kani1.jpg" alt="카니" class="w-32 h-32 object-cover rounded-full border-4 border-white shadow-md z-10 mb-4 animate-bounce-soft" style="animation-delay: 0.3s;">
-                    <h3 class="text-2xl text-red-400 z-10 mb-1 font-bold">카니 (헌책방)</h3>
-                    <p class="text-gray-500 text-center z-10 text-sm">수줍음 많은 책방 주인</p>
+                    <h3 data-i18n="kn_name" class="text-2xl text-red-400 z-10 mb-1 font-bold">카니 (헌책방)</h3>
+                    <p data-i18n="kn_sub" class="text-gray-500 text-center z-10 text-sm">수줍음 많은 책방 주인</p>
                 </div>
                 <!-- 쿠리만쥬 -->
-                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-amber-100 flex flex-col items-center cursor-pointer relative overflow-hidden" onclick="openModal('kurimanju')">
+                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-amber-100 flex flex-col items-center relative overflow-hidden" onclick="openModal('kurimanju')">
                     <img src="https://i.postimg.cc/2yM4vfyh/kurimaju1.jpg" alt="쿠리만쥬" class="w-32 h-32 object-cover rounded-full border-4 border-white shadow-md z-10 mb-4 animate-bounce-soft" style="animation-delay: 0.4s;">
-                    <h3 class="text-2xl text-amber-600 z-10 mb-1 font-bold">쿠리만쥬</h3>
-                    <p class="text-gray-500 text-center z-10 text-sm">하아~ 안주를 사랑하는 미식가</p>
+                    <h3 data-i18n="km_name" class="text-2xl text-amber-600 z-10 mb-1 font-bold">쿠리만쥬</h3>
+                    <p data-i18n="km_sub" class="text-gray-500 text-center z-10 text-sm">하아~ 안주를 사랑하는 미식가</p>
                 </div>
                 <!-- 랏코 -->
-                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-slate-200 flex flex-col items-center cursor-pointer relative overflow-hidden" onclick="openModal('rakko')">
+                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-slate-200 flex flex-col items-center relative overflow-hidden" onclick="openModal('rakko')">
                     <img src="https://i.postimg.cc/MHNyR8H7/rakko1.jpg" alt="랏코" class="w-32 h-32 object-cover rounded-full border-4 border-white shadow-md z-10 mb-4 animate-bounce-soft" style="animation-delay: 0.5s;">
-                    <h3 class="text-2xl text-slate-600 z-10 mb-1 font-bold">랏코</h3>
-                    <p class="text-gray-500 text-center z-10 text-sm">단것에 약한 토벌 랭킹 1위</p>
+                    <h3 data-i18n="rk_name" class="text-2xl text-slate-600 z-10 mb-1 font-bold">랏코</h3>
+                    <p data-i18n="rk_sub" class="text-gray-500 text-center z-10 text-sm">단것에 약한 토벌 랭킹 1위</p>
                 </div>
                 <!-- 시사 -->
-                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-orange-200 flex flex-col items-center cursor-pointer relative overflow-hidden" onclick="openModal('shisa')">
+                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-orange-200 flex flex-col items-center relative overflow-hidden" onclick="openModal('shisa')">
                     <img src="https://i.postimg.cc/fypxXhy7/sisa1.jpg" alt="시사" class="w-32 h-32 object-cover rounded-full border-4 border-white shadow-md z-10 mb-4 animate-bounce-soft" style="animation-delay: 0.6s;">
-                    <h3 class="text-2xl text-orange-500 z-10 mb-1 font-bold">시사</h3>
-                    <p class="text-gray-500 text-center z-10 text-sm">우레시사~ 똑똑한 슈퍼 알바생</p>
+                    <h3 data-i18n="ss_name" class="text-2xl text-orange-500 z-10 mb-1 font-bold">시사</h3>
+                    <p data-i18n="ss_sub" class="text-gray-500 text-center z-10 text-sm">우레시사~ 똑똑한 슈퍼 알바생</p>
+                </div>
+                <!-- 모몽가 -->
+                <div class="character-card bg-white rounded-[3rem] p-6 shadow-lg border-4 border-purple-200 flex flex-col items-center relative overflow-hidden" onclick="openModal('momonga')">
+                    <!-- 모몽가 이미지가 없어 플레이스홀더를 임시 사용 -->
+                    <img src="https://i.postimg.cc/gcHq4rtq/momonga.webp" alt="모몽가" class="w-32 h-32 object-cover rounded-full border-4 border-white shadow-md z-10 mb-4 animate-bounce-soft" style="animation-delay: 0.7s;">
+                    <h3 data-i18n="mm_name" class="text-2xl text-purple-500 z-10 mb-1 font-bold">모몽가</h3>
+                    <p data-i18n="mm_sub" class="text-gray-500 text-center z-10 text-sm">칭찬받고 싶어하는 귀염둥이</p>
                 </div>
             </section>
         </div>
 
-        <section class="bg-white rounded-[3rem] p-8 md:p-12 shadow-xl border-4 border-blue-50 text-center relative overflow-hidden max-w-3xl mx-auto mb-10">
-            <div class="absolute top-[-50px] right-[-50px] text-blue-100 opacity-50 text-9xl">✨</div>
-            <div class="absolute bottom-[-50px] left-[-50px] text-pink-100 opacity-50 text-9xl">🍀</div>
+        <section class="bg-white rounded-[3rem] p-8 md:p-12 shadow-xl border-4 border-blue-50 text-center relative overflow-hidden max-w-3xl mx-auto mb-10 transition-colors">
+            <h2 data-i18n="gacha_title" class="text-3xl md:text-4xl text-gray-800 mb-4 relative z-10">오늘의 먼작귀 운세 뽑기! 🔮</h2>
+            <p data-i18n="gacha_desc" class="text-gray-500 mb-8 relative z-10">버튼을 눌러 오늘의 나와 찰떡인 캐릭터와 행운의 메시지를 확인해보세요.</p>
             
-            <h2 class="text-3xl md:text-4xl text-gray-800 mb-4 relative z-10">오늘의 먼작귀 운세 뽑기! 🔮</h2>
-            <p class="text-gray-500 mb-8 relative z-10">버튼을 눌러 오늘의 나와 찰떡인 캐릭터와 행운의 메시지를 확인해보세요.</p>
-            
-            <div id="gachaBox" class="text-8xl mb-8 cursor-pointer transition-transform z-10 relative inline-block">🎁</div>
+            <div id="gachaBox" class="text-8xl mb-8 transition-transform z-10 relative inline-block cursor-pointer">🎁</div>
 
             <div class="relative z-10">
-                <button id="gachaBtn" class="bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600 text-white text-xl py-4 px-10 rounded-full shadow-lg transform transition hover:scale-105 active:scale-95 font-bold">
+                <button id="gachaBtn" data-i18n="gacha_btn" class="bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600 text-white text-xl py-4 px-10 rounded-full shadow-lg transform transition hover:scale-105 active:scale-95 font-bold">
                     운세 뽑기 시작!
                 </button>
             </div>
         </section>
     </main>
 
-    <footer class="w-full text-center py-6 text-gray-400 text-sm mt-auto pb-10">
+    <footer data-i18n="footer" class="w-full text-center py-6 text-gray-400 text-sm mt-auto pb-10">
         &copy; 2026 I AM Project. All cute rights reserved.
     </footer>
 
-    <div id="overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-40 items-center justify-center p-4 overflow-y-auto">
-        <!-- 모달 컨테이너들 (JS로 동적 제어) -->
+    <div id="overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-40 items-center justify-center p-4 overflow-y-auto">
+        <!-- 모달 컨테이너들 -->
         
-        <!-- 농담곰 모달 -->
-        <div id="modal-nongdamgom" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto">
-            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
+        <div id="modal-nongdamgom" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto border-4 border-yellow-100">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
             <div class="text-center">
                 <img src="https://i.postimg.cc/1X2p6ZXN/damgom1.jpg" class="w-40 h-40 object-cover rounded-full mx-auto mb-4 border-4 border-yellow-200">
-                <h3 class="text-3xl text-yellow-600 mb-4 font-bold">농담곰 (Nongdamgom)</h3>
+                <h3 data-i18n="m_ndg_title" class="text-3xl text-yellow-600 mb-4 font-bold">농담곰 (Nongdamgom)</h3>
                 <div class="bg-yellow-50 rounded-2xl p-4 text-left text-gray-700 leading-relaxed text-sm md:text-base">
-                    <p class="mb-2"><strong>특징:</strong> 느긋하고 먹는 것을 세상에서 가장 좋아하는 하얀 곰입니다. 가끔 예상치 못한 엉뚱한 행동을 하기도 합니다.</p>
-                    <p class="mb-2"><strong>매력 포인트:</strong> 맛있는 음식을 먹을 때 나오는 진실의 리액션! 일상의 소소한 행복을 가장 잘 대변하는 힐링 캐릭터입니다.</p>
+                    <p class="mb-2"><strong data-i18n="m_f1">특징:</strong> <span data-i18n="m_ndg_f1">느긋하고 먹는 것을 세상에서 가장 좋아하는 하얀 곰입니다. 가끔 예상치 못한 엉뚱한 행동을 하기도 합니다.</span></p>
+                    <p class="mb-2"><strong data-i18n="m_f2">매력 포인트:</strong> <span data-i18n="m_ndg_f2">맛있는 음식을 먹을 때 나오는 진실의 리액션! 일상의 소소한 행복을 가장 잘 대변하는 힐링 캐릭터입니다.</span></p>
                 </div>
             </div>
         </div>
 
-        <!-- 퍼그 모달 -->
-        <div id="modal-pug" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto">
-            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
+        <div id="modal-pug" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto border-4 border-gray-100">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
             <div class="text-center">
                 <img src="https://i.postimg.cc/x8hKHS8K/pugg1.jpg" class="w-40 h-40 object-cover rounded-full mx-auto mb-4 border-4 border-gray-200">
-                <h3 class="text-3xl text-gray-600 mb-4 font-bold">퍼그 선배 (Pug)</h3>
+                <h3 data-i18n="m_pug_title" class="text-3xl text-gray-600 mb-4 font-bold">퍼그 선배 (Pug)</h3>
                 <div class="bg-gray-50 rounded-2xl p-4 text-left text-gray-700 leading-relaxed text-sm md:text-base">
-                    <p class="mb-2"><strong>특징:</strong> 멋진 선글라스를 끼고 다니는 힙한 강아지. 농담곰의 듬직한 형님 같은 존재입니다.</p>
-                    <p class="mb-2"><strong>매력 포인트:</strong> 시크해 보이는 외모와 달리 속정이 깊고 은근히 장난기가 많습니다.</p>
+                    <p class="mb-2"><strong data-i18n="m_f1">특징:</strong> <span data-i18n="m_pug_f1">멋진 선글라스를 끼고 다니는 힙한 강아지. 농담곰의 듬직한 형님 같은 존재입니다.</span></p>
+                    <p class="mb-2"><strong data-i18n="m_f2">매력 포인트:</strong> <span data-i18n="m_pug_f2">시크해 보이는 외모와 달리 속정이 깊고 은근히 장난기가 많습니다.</span></p>
                 </div>
             </div>
         </div>
 
-        <!-- 고로케 모달 -->
-        <div id="modal-goroke" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto">
-            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
+        <div id="modal-goroke" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto border-4 border-orange-100">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
             <div class="text-center">
                 <img src="https://i.postimg.cc/nrgv7trD/goroke1.jpg" class="w-40 h-40 object-cover rounded-full mx-auto mb-4 border-4 border-orange-200">
-                <h3 class="text-3xl text-orange-500 mb-4 font-bold">고로케 (Croquette)</h3>
+                <h3 data-i18n="m_grk_title" class="text-3xl text-orange-500 mb-4 font-bold">고로케 (Croquette)</h3>
                 <div class="bg-orange-50 rounded-2xl p-4 text-left text-gray-700 leading-relaxed text-sm md:text-base">
-                    <p class="mb-2"><strong>특징:</strong> 바삭바삭한 튀김옷을 입은 강아지(?) 모양의 요정. 머리가 파스스 부서지기도 합니다.</p>
-                    <p class="mb-2"><strong>매력 포인트:</strong> 엄청난 소심쟁이라 구석에 숨거나 당황하는 모습이 보호본능을 자극합니다.</p>
+                    <p class="mb-2"><strong data-i18n="m_f1">특징:</strong> <span data-i18n="m_grk_f1">바삭바삭한 튀김옷을 입은 강아지(?) 모양의 요정. 머리가 파스스 부서지기도 합니다.</span></p>
+                    <p class="mb-2"><strong data-i18n="m_f2">매력 포인트:</strong> <span data-i18n="m_grk_f2">엄청난 소심쟁이라 구석에 숨거나 당황하는 모습이 보호본능을 자극합니다.</span></p>
                 </div>
             </div>
         </div>
 
-        <!-- 치이카와 모달 -->
-        <div id="modal-chiikawa" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto">
-            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
+        <div id="modal-chiikawa" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto border-4 border-pink-100">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
             <div class="text-center">
                 <img src="https://i.postimg.cc/C5XjDV5z/chiikawa1.jpg" class="w-40 h-40 object-cover rounded-full mx-auto mb-4 border-4 border-pink-200">
-                <h3 class="text-3xl text-pink-500 mb-4 font-bold">치이카와 (Chiikawa)</h3>
+                <h3 data-i18n="m_cw_title" class="text-3xl text-pink-500 mb-4 font-bold">치이카와 (Chiikawa)</h3>
                 <div class="bg-pink-50 rounded-2xl p-4 text-left text-gray-700 leading-relaxed text-sm md:text-base">
-                    <p class="mb-2"><strong>특징:</strong> 작고 귀여운 녀석. 대사는 주로 "와앗", "후에엥" 같은 의성어뿐입니다. 무서운 것을 싫어하고 눈물도 많습니다.</p>
-                    <p class="mb-2"><strong>매력 포인트:</strong> 겁은 많지만 소중한 친구들(하치와레, 우사기)이 위험에 처하면 언제든 용기를 내는 외유내강형 캐릭터!</p>
+                    <p class="mb-2"><strong data-i18n="m_f1">특징:</strong> <span data-i18n="m_cw_f1">작고 귀여운 녀석. 대사는 주로 "와앗", "후에엥" 뿐입니다. 무서운 것을 싫어하고 눈물도 많습니다.</span></p>
+                    <p class="mb-2"><strong data-i18n="m_f2">매력 포인트:</strong> <span data-i18n="m_cw_f2">겁은 많지만 소중한 친구들이 위험에 처하면 언제든 용기를 내는 외유내강형 캐릭터!</span></p>
                 </div>
             </div>
         </div>
 
-        <!-- 하치와레 모달 -->
-        <div id="modal-hachiware" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto">
-            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
+        <div id="modal-hachiware" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto border-4 border-blue-100">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
             <div class="text-center">
                 <img src="https://i.postimg.cc/Zn2r3hn3/hachiware1.jpg" class="w-40 h-40 object-cover rounded-full mx-auto mb-4 border-4 border-blue-200">
-                <h3 class="text-3xl text-blue-500 mb-4 font-bold">하치와레 (Hachiware)</h3>
+                <h3 data-i18n="m_hw_title" class="text-3xl text-blue-500 mb-4 font-bold">하치와레 (Hachiware)</h3>
                 <div class="bg-blue-50 rounded-2xl p-4 text-left text-gray-700 leading-relaxed text-sm md:text-base">
-                    <p class="mb-2"><strong>특징:</strong> 유창하게 말을 할 줄 아는 가르마 무늬 고양이. 동굴에 살며 가난하지만 기타 치기와 저축을 열심히 합니다.</p>
-                    <p class="mb-2"><strong>명대사:</strong> "어떻게든 될 거야!", "에에?!"</p>
-                    <p><strong>매력 포인트:</strong> 어떤 힘든 상황에서도 특유의 긍정적인 마인드로 친구들을 이끌어주는 든든한 절친입니다.</p>
+                    <p class="mb-2"><strong data-i18n="m_f1">특징:</strong> <span data-i18n="m_hw_f1">유창하게 말을 할 줄 아는 가르마 무늬 고양이. 동굴에 살며 가난하지만 열심히 저축을 합니다.</span></p>
+                    <p class="mb-2"><strong data-i18n="m_f2">매력 포인트:</strong> <span data-i18n="m_hw_f2">어떤 힘든 상황에서도 특유의 긍정적인 마인드로 친구들을 이끌어주는 든든한 절친입니다.</span></p>
                 </div>
             </div>
         </div>
 
-        <!-- 우사기 모달 -->
-        <div id="modal-usagi" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto">
-            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
+        <div id="modal-usagi" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto border-4 border-yellow-200">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
             <div class="text-center">
                 <img src="https://i.postimg.cc/C5XjDV5H/usagi1.jpg" class="w-40 h-40 object-cover rounded-full mx-auto mb-4 border-4 border-yellow-300">
-                <h3 class="text-3xl text-yellow-500 mb-4 font-bold">우사기 (Usagi)</h3>
+                <h3 data-i18n="m_us_title" class="text-3xl text-yellow-500 mb-4 font-bold">우사기 (Usagi)</h3>
                 <div class="bg-yellow-50 rounded-2xl p-4 text-left text-gray-700 leading-relaxed text-sm md:text-base">
-                    <p class="mb-2"><strong>특징:</strong> "우라라라!", "야하!" 같은 괴성을 지르는 자유분방한 토끼. 높은 신체 능력을 보유하여 토벌전에서 맹활약합니다.</p>
-                    <p class="mb-2"><strong>매력 포인트:</strong> 기행을 일삼아 친구들을 당황시키기도 하지만, 위기 상황에서는 뛰어난 무력과 재치로 하드캐리하는 능력자입니다.</p>
+                    <p class="mb-2"><strong data-i18n="m_f1">특징:</strong> <span data-i18n="m_us_f1">"우라라라!" 같은 괴성을 지르는 자유분방한 토끼. 높은 신체 능력을 보유하여 토벌전에서 맹활약합니다.</span></p>
+                    <p class="mb-2"><strong data-i18n="m_f2">매력 포인트:</strong> <span data-i18n="m_us_f2">기행을 일삼아 당황시키기도 하지만, 위기 상황에서는 뛰어난 무력과 재치로 하드캐리합니다.</span></p>
                 </div>
             </div>
         </div>
 
-        <!-- 카니 모달 -->
-        <div id="modal-kani" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto">
-            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
+        <div id="modal-kani" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto border-4 border-red-100">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
             <div class="text-center">
                 <img src="https://i.postimg.cc/J0vbJW0X/kani1.jpg" class="w-40 h-40 object-cover rounded-full mx-auto mb-4 border-4 border-red-200">
-                <h3 class="text-3xl text-red-400 mb-4 font-bold">카니 (헌책방)</h3>
+                <h3 data-i18n="m_kn_title" class="text-3xl text-red-400 mb-4 font-bold">카니 (헌책방)</h3>
                 <div class="bg-red-50 rounded-2xl p-4 text-left text-gray-700 leading-relaxed text-sm md:text-base">
-                    <p class="mb-2"><strong>특징:</strong> 게 머리띠를 한 귀여운 모습. 원래 이름 없는 모브 캐릭터였으나 헌책방(후루혼야)을 운영하며 주요 캐릭터로 승격했습니다!</p>
-                    <p class="mb-2"><strong>매력 포인트:</strong> 무척 수줍음이 많지만 모몽가 등 친구들을 잘 챙겨주는 따뜻한 마음씨를 가졌습니다.</p>
+                    <p class="mb-2"><strong data-i18n="m_f1">특징:</strong> <span data-i18n="m_kn_f1">게 머리띠를 한 귀여운 모습. 모브 캐릭터였으나 헌책방을 운영하며 주요 캐릭터로 승격!</span></p>
+                    <p class="mb-2"><strong data-i18n="m_f2">매력 포인트:</strong> <span data-i18n="m_kn_f2">무척 수줍음이 많지만 모몽가 등 친구들을 잘 챙겨주는 따뜻한 마음씨를 가졌습니다.</span></p>
                 </div>
             </div>
         </div>
 
-        <!-- 쿠리만쥬 모달 -->
-        <div id="modal-kurimanju" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto">
-            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
+        <div id="modal-kurimanju" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto border-4 border-amber-100">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
             <div class="text-center">
                 <img src="https://i.postimg.cc/2yM4vfyh/kurimaju1.jpg" class="w-40 h-40 object-cover rounded-full mx-auto mb-4 border-4 border-amber-200">
-                <h3 class="text-3xl text-amber-600 mb-4 font-bold">쿠리만쥬 (Kurimanju)</h3>
+                <h3 data-i18n="m_km_title" class="text-3xl text-amber-600 mb-4 font-bold">쿠리만쥬 (Kurimanju)</h3>
                 <div class="bg-amber-50 rounded-2xl p-4 text-left text-gray-700 leading-relaxed text-sm md:text-base">
-                    <p class="mb-2"><strong>특징:</strong> 밤만쥬를 닮은 캐릭터. 귀여운 외모와 달리 맛있는 안주와 술(이 세계에선 무알콜)을 즐기는 완벽한 '아재 감성'을 자랑합니다.</p>
-                    <p class="mb-2"><strong>명대사:</strong> (벌컥벌컥 마신 뒤) "하아-!"</p>
+                    <p class="mb-2"><strong data-i18n="m_f1">특징:</strong> <span data-i18n="m_km_f1">밤만쥬를 닮은 캐릭터. 귀여운 외모와 달리 맛있는 안주와 술을 즐기는 '아재 감성'을 자랑합니다.</span></p>
+                    <p class="mb-2"><strong data-i18n="m_f2">매력 포인트:</strong> <span data-i18n="m_km_f2">(벌컥벌컥 마신 뒤) "하아-!" 하는 시원한 리액션!</span></p>
                 </div>
             </div>
         </div>
 
-        <!-- 랏코 모달 -->
-        <div id="modal-rakko" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto">
-            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
+        <div id="modal-rakko" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto border-4 border-slate-200">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
             <div class="text-center">
                 <img src="https://i.postimg.cc/MHNyR8H7/rakko1.jpg" class="w-40 h-40 object-cover rounded-full mx-auto mb-4 border-4 border-slate-300">
-                <h3 class="text-3xl text-slate-600 mb-4 font-bold">랏코 (Rakko)</h3>
+                <h3 data-i18n="m_rk_title" class="text-3xl text-slate-600 mb-4 font-bold">랏코 (Rakko)</h3>
                 <div class="bg-slate-50 rounded-2xl p-4 text-left text-gray-700 leading-relaxed text-sm md:text-base">
-                    <p class="mb-2"><strong>특징:</strong> 이마에 십자 흉터가 있는 해달. 토벌 랭크 1위의 초강자로 모두가 우러러보는 영웅입니다.</p>
-                    <p class="mb-2"><strong>매력 포인트:</strong> 엄청난 카리스마를 내뿜지만, 사실 디저트를 너무너무 좋아하는 엄청난 단맛 러버라는 반전 매력이 있습니다.</p>
+                    <p class="mb-2"><strong data-i18n="m_f1">특징:</strong> <span data-i18n="m_rk_f1">이마에 십자 흉터가 있는 해달. 토벌 랭크 1위의 초강자로 모두가 우러러보는 영웅입니다.</span></p>
+                    <p class="mb-2"><strong data-i18n="m_f2">매력 포인트:</strong> <span data-i18n="m_rk_f2">엄청난 카리스마를 내뿜지만, 사실 디저트를 너무너무 좋아하는 엄청난 단맛 러버!</span></p>
                 </div>
             </div>
         </div>
 
-        <!-- 시사 모달 -->
-        <div id="modal-shisa" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto">
-            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
+        <div id="modal-shisa" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto border-4 border-orange-100">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
             <div class="text-center">
                 <img src="https://i.postimg.cc/fypxXhy7/sisa1.jpg" class="w-40 h-40 object-cover rounded-full mx-auto mb-4 border-4 border-orange-200">
-                <h3 class="text-3xl text-orange-500 mb-4 font-bold">시사 (Shisa)</h3>
+                <h3 data-i18n="m_ss_title" class="text-3xl text-orange-500 mb-4 font-bold">시사 (Shisa)</h3>
                 <div class="bg-orange-50 rounded-2xl p-4 text-left text-gray-700 leading-relaxed text-sm md:text-base">
-                    <p class="mb-2"><strong>특징:</strong> 오키나와 사자 동상(시사)을 모티브로 한 캐릭터. "우레시사~"가 입버릇입니다.</p>
-                    <p class="mb-2"><strong>매력 포인트:</strong> 라멘 갑옷 씨 밑에서 일하는 '슈퍼 알바생' 자격을 갖춘 성실하고 똑똑한 친구입니다. 음식도 잘 만듭니다.</p>
+                    <p class="mb-2"><strong data-i18n="m_f1">특징:</strong> <span data-i18n="m_ss_f1">오키나와 사자 동상(시사)을 모티브로 한 캐릭터. "우레시사~"가 입버릇입니다.</span></p>
+                    <p class="mb-2"><strong data-i18n="m_f2">매력 포인트:</strong> <span data-i18n="m_ss_f2">라멘 갑옷 씨 밑에서 일하는 성실하고 똑똑한 '슈퍼 알바생'입니다.</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="modal-momonga" class="modal-content bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative hidden my-auto border-4 border-purple-100">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
+            <div class="text-center">
+                <img src="https://placehold.co/400x400/e9d5ff/9333ea?text=Momonga" class="w-40 h-40 object-cover rounded-full mx-auto mb-4 border-4 border-purple-200">
+                <h3 data-i18n="m_mm_title" class="text-3xl text-purple-500 mb-4 font-bold">모몽가 (Momonga)</h3>
+                <div class="bg-purple-50 rounded-2xl p-4 text-left text-gray-700 leading-relaxed text-sm md:text-base">
+                    <p class="mb-2"><strong data-i18n="m_f1">특징:</strong> <span data-i18n="m_mm_f1">하얗고 복슬복슬한 꼬리를 가진 녀석. 늘 자신이 귀엽다는 것을 어필하며 칭찬받기를 원합니다.</span></p>
+                    <p class="mb-2"><strong data-i18n="m_f2">매력 포인트:</strong> <span data-i18n="m_mm_f2">가끔은 뻔뻔하지만 미워할 수 없는 매력의 소유자로 이야기의 재미를 더합니다.</span></p>
                 </div>
             </div>
         </div>
 
-        <!-- 운세 가챠 결과 모달 (배경 하얀색 고정) -->
+        <!-- 가챠 결과 모달 -->
         <div id="modal-gachaResult" class="modal-content bg-white w-full max-w-lg rounded-3xl p-8 shadow-2xl relative hidden my-auto text-center border-8 border-gray-100">
-            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition">✕</button>
             
-            <p class="text-gray-500 mb-2 mt-2 text-lg font-bold">오늘 당신과 함께할 메이트는?</p>
+            <p data-i18n="gacha_res_sub" class="text-gray-500 mb-2 mt-2 text-lg font-bold">오늘 당신과 함께할 메이트는?</p>
             <div class="min-h-[160px] flex items-center justify-center mb-4">
                 <img id="gachaImage" src="" alt="캐릭터" class="w-40 h-40 object-cover rounded-full border-4 border-gray-100 shadow-md animate-bounce-soft hidden">
             </div>
@@ -321,21 +362,23 @@
             
             <div class="bg-gray-50 rounded-2xl p-6 shadow-inner text-left">
                 <p id="gachaMessage" class="text-lg text-gray-700 leading-relaxed mb-4">
-                    여기에 운세 메시지가 출력됩니다.
+                    운세 메시지
                 </p>
-                <div class="pt-4 border-t border-gray-200 flex justify-between items-center">
-                    <span class="text-sm text-gray-500 font-bold">🍀 럭키 아이템: </span>
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-600 flex justify-between items-center">
+                    <span data-i18n="gacha_lucky" class="text-sm text-gray-500 font-bold">🍀 럭키 아이템: </span>
                     <span id="gachaItem" class="font-bold text-blue-500 bg-blue-50 px-3 py-1 rounded-full">아이템</span>
                 </div>
             </div>
             
-            <button onclick="closeModal()" class="mt-8 bg-gray-800 hover:bg-gray-900 text-white w-full py-3 rounded-full text-lg transition shadow-md font-bold">확인 완료!</button>
+            <button data-i18n="gacha_res_btn" onclick="closeModal()" class="mt-8 bg-gray-800 dark:bg-gray-600 hover:bg-gray-900 text-white w-full py-3 rounded-full text-lg transition shadow-md font-bold">확인 완료!</button>
         </div>
     </div>
 
     <script>
         // DOM 요소 캐싱
         const overlay = document.getElementById('overlay');
+        const themeToggle = document.getElementById('themeToggle');
+        const langToggle = document.getElementById('langToggle');
         const modals = {
             'nongdamgom': document.getElementById('modal-nongdamgom'),
             'pug': document.getElementById('modal-pug'),
@@ -347,157 +390,205 @@
             'kurimanju': document.getElementById('modal-kurimanju'),
             'rakko': document.getElementById('modal-rakko'),
             'shisa': document.getElementById('modal-shisa'),
+            'momonga': document.getElementById('modal-momonga'),
             'gacha': document.getElementById('modal-gachaResult')
         };
         
         const gachaBox = document.getElementById('gachaBox');
         const gachaBtn = document.getElementById('gachaBtn');
-        
         const gachaImage = document.getElementById('gachaImage');
         const gachaName = document.getElementById('gachaName');
         const gachaMessage = document.getElementById('gachaMessage');
         const gachaItem = document.getElementById('gachaItem');
         const modalGachaResult = document.getElementById('modal-gachaResult');
 
-        // 통합 가챠 데이터 베이스 (이미지 소스 반영)
-        const gachaData = [
-            {
-                name: "치이카와",
-                image: "https://i.postimg.cc/C5XjDV5z/chiikawa1.jpg",
-                color: "#fbcfe8", // pink-200
-                message: "작지만 확실한 용기가 솟아나는 날! 조금 두려워도 한 발짝 내디뎌보면 좋은 결과가 있을 거예요.",
-                item: "달콤한 푸딩 🍮"
-            },
-            {
-                name: "하치와레",
-                image: "https://i.postimg.cc/Zn2r3hn3/hachiware1.jpg",
-                color: "#bfdbfe", // blue-200
-                message: "어떻게든 될 거야! 긍정적인 에너지가 가득해서 주변 사람들에게도 큰 위안을 줄 수 있는 완벽한 하루입니다.",
-                item: "필름 카메라 📷"
-            },
-            {
-                name: "우사기",
-                image: "https://i.postimg.cc/C5XjDV5H/usagi1.jpg",
-                color: "#fef08a", // yellow-200
-                message: "우라라라라!! 넘치는 활력으로 텐션업! 평소에 미뤄둔 일이 있다면 오늘이 바로 순식간에 끝낼 수 있는 타이밍입니다.",
-                item: "타코야끼 🐙"
-            },
-            {
-                name: "농담곰",
-                image: "https://i.postimg.cc/1X2p6ZXN/damgom1.jpg",
-                color: "#fef08a", // yellow-200
-                message: "복잡한 생각은 잠시 내려놓고, 세상에서 제일 맛있는 걸 먹으러 가세요. 소소한 행복이 당신을 기다립니다.",
-                item: "따끈한 국밥 🍚"
-            },
-            {
-                name: "퍼그 선배",
-                image: "https://i.postimg.cc/x8hKHS8K/pugg1.jpg",
-                color: "#e5e7eb", // gray-200
-                message: "오늘은 당신의 힙한 감각과 센스가 돋보이는 날. 여유로운 태도로 사람들의 이목을 사로잡을 수 있어요.",
-                item: "멋진 선글라스 🕶️"
-            },
-            {
-                name: "고로케",
-                image: "https://i.postimg.cc/nrgv7trD/goroke1.jpg",
-                color: "#fed7aa", // orange-200
-                message: "겉은 바삭, 속은 촉촉! 다소 소심해지더라도 당신의 따뜻한 진심은 상대방에게 온전히 전해질 것입니다.",
-                item: "케첩 뿌린 튀김 🍤"
-            },
-            {
-                name: "카니 (헌책방)",
-                image: "https://i.postimg.cc/J0vbJW0X/kani1.jpg",
-                color: "#fecaca", // red-200
-                message: "조용한 휴식이 필요한 하루. 좋아하는 책이나 만화책을 읽으며 마음의 양식을 채워보는 건 어떨까요?",
-                item: "오래된 동화책 📚"
-            },
-            {
-                name: "쿠리만쥬",
-                image: "https://i.postimg.cc/2yM4vfyh/kurimaju1.jpg",
-                color: "#fde68a", // amber-200
-                message: "하아~! 오늘 하루 일과를 마치고 시원한 음료수 한 잔과 맛있는 안주로 스스로에게 보상을 주세요.",
-                item: "시원한 콜라와 오징어 🦑"
-            },
-            {
-                name: "랏코",
-                image: "https://i.postimg.cc/MHNyR8H7/rakko1.jpg",
-                color: "#cbd5e1", // slate-200
-                message: "어려운 과제가 주어져도 멋지게 해결할 수 있는 능력이 솟아납니다. 해결 후엔 꼭 달콤한 디저트를 드세요!",
-                item: "딸기 파르페 🍨"
-            },
-            {
-                name: "시사",
-                image: "https://i.postimg.cc/fypxXhy7/sisa1.jpg",
-                color: "#fed7aa", // orange-200
-                message: "우레시사~ 특유의 성실함과 똑똑함으로 주변 사람들에게 능력을 인정받게 되는 멋진 날입니다.",
-                item: "따뜻한 라멘 한 그릇 🍜"
-            },
-            {
-                name: "모몽가",
-                image: "https://placehold.co/400x400/fbcfe8/ec4899?text=Momonga", // 이미지가 없어 귀여운 플레이스홀더 사용
-                color: "#fbcfe8", // pink-200
-                message: "오늘은 마음껏 귀여운 척을 해봐도 괜찮아요! 당신의 넘치는 애교가 사람들의 마음을 몽글몽글하게 만듭니다.",
-                item: "복숭아 사탕 🍑"
+        // 다크 모드 토글 로직
+        let isDark = false;
+        themeToggle.addEventListener('click', () => {
+            isDark = !isDark;
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+                document.body.classList.add('dark');
+                themeToggle.innerText = '☀️';
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.body.classList.remove('dark');
+                themeToggle.innerText = '🌙';
             }
-        ];
+        });
 
-        let isGachaRolling = false;
+        // 다국어 데이터베이스
+        const translations = {
+            ko: {
+                proj_tag: "PROJECT: I AM",
+                main_title: "제가 좋아하는 캐릭터를 소개합니다 🐾",
+                main_desc: "바쁜 일상 속, 나에게 작은 힐링과 즐거움을 주는 최애 캐릭터들을 소개합니다. <br class='hidden md:block'>농담곰과 치이카와 친구들이 전해주는 따뜻한 에너지를 받아가세요!",
+                sec1_title: "🐻 농담곰 캐릭터들",
+                ndg_name: "농담곰", ndg_sub: "먹보이자 느긋함의 대명사",
+                pug_name: "퍼그 선배", pug_sub: "선글라스가 매력적인 듬직한 선배",
+                grk_name: "고로케", grk_sub: "겉바속촉! 소심하지만 정 많은 친구",
+                sec2_title: "🐹 치이카와 캐릭터들",
+                cw_name: "치이카와", cw_sub: "작고 귀여운 노력파",
+                hw_name: "하치와레", hw_sub: "긍정 에너지 가득한 고양이",
+                us_name: "우사기", us_sub: "우라라라! 자유로운 영혼",
+                kn_name: "카니 (헌책방)", kn_sub: "수줍음 많은 책방 주인",
+                km_name: "쿠리만쥬", km_sub: "하아~ 안주를 사랑하는 미식가",
+                rk_name: "랏코", rk_sub: "단것에 약한 토벌 랭킹 1위",
+                ss_name: "시사", ss_sub: "우레시사~ 똑똑한 슈퍼 알바생",
+                mm_name: "모몽가", mm_sub: "칭찬받고 싶어하는 귀염둥이",
+                gacha_title: "오늘의 먼작귀 운세 뽑기! 🔮",
+                gacha_desc: "버튼을 눌러 오늘의 나와 찰떡인 캐릭터와 행운의 메시지를 확인해보세요.",
+                gacha_btn: "운세 뽑기 시작!",
+                gacha_rolling: "두근두근 뽑는 중...!",
+                footer: "&copy; 2026 I AM Project. All cute rights reserved.",
+                m_f1: "특징:", m_f2: "매력 포인트:",
+                m_ndg_title: "농담곰 (Nongdamgom)", m_ndg_f1: "느긋하고 먹는 것을 세상에서 가장 좋아하는 하얀 곰입니다. 가끔 예상치 못한 엉뚱한 행동을 하기도 합니다.", m_ndg_f2: "맛있는 음식을 먹을 때 나오는 진실의 리액션! 일상의 소소한 행복을 가장 잘 대변하는 힐링 캐릭터입니다.",
+                m_pug_title: "퍼그 선배 (Pug)", m_pug_f1: "멋진 선글라스를 끼고 다니는 힙한 강아지. 농담곰의 듬직한 형님 같은 존재입니다.", m_pug_f2: "시크해 보이는 외모와 달리 속정이 깊고 은근히 장난기가 많습니다.",
+                m_grk_title: "고로케 (Croquette)", m_grk_f1: "바삭바삭한 튀김옷을 입은 강아지(?) 모양의 요정. 머리가 파스스 부서지기도 합니다.", m_grk_f2: "엄청난 소심쟁이라 구석에 숨거나 당황하는 모습이 보호본능을 자극합니다.",
+                m_cw_title: "치이카와 (Chiikawa)", m_cw_f1: "작고 귀여운 녀석. 대사는 주로 '와앗', '후에엥' 뿐입니다. 무서운 것을 싫어하고 눈물도 많습니다.", m_cw_f2: "겁은 많지만 소중한 친구들이 위험에 처하면 언제든 용기를 내는 외유내강형 캐릭터!",
+                m_hw_title: "하치와레 (Hachiware)", m_hw_f1: "유창하게 말을 할 줄 아는 가르마 무늬 고양이. 동굴에 살며 가난하지만 열심히 저축을 합니다.", m_hw_f2: "어떤 힘든 상황에서도 특유의 긍정적인 마인드로 친구들을 이끌어주는 든든한 절친입니다.",
+                m_us_title: "우사기 (Usagi)", m_us_f1: "'우라라라!' 같은 괴성을 지르는 자유분방한 토끼. 높은 신체 능력을 보유하여 토벌전에서 맹활약합니다.", m_us_f2: "기행을 일삼아 당황시키기도 하지만, 위기 상황에서는 뛰어난 무력과 재치로 하드캐리합니다.",
+                m_kn_title: "카니 (헌책방)", m_kn_f1: "게 머리띠를 한 귀여운 모습. 모브 캐릭터였으나 헌책방을 운영하며 주요 캐릭터로 승격!", m_kn_f2: "무척 수줍음이 많지만 모몽가 등 친구들을 잘 챙겨주는 따뜻한 마음씨를 가졌습니다.",
+                m_km_title: "쿠리만쥬 (Kurimanju)", m_km_f1: "밤만쥬를 닮은 캐릭터. 귀여운 외모와 달리 맛있는 안주와 술을 즐기는 '아재 감성'을 자랑합니다.", m_km_f2: "(벌컥벌컥 마신 뒤) '하아-!' 하는 시원한 리액션!",
+                m_rk_title: "랏코 (Rakko)", m_rk_f1: "이마에 십자 흉터가 있는 해달. 토벌 랭크 1위의 초강자로 모두가 우러러보는 영웅입니다.", m_rk_f2: "엄청난 카리스마를 내뿜지만, 사실 디저트를 너무너무 좋아하는 엄청난 단맛 러버!",
+                m_ss_title: "시사 (Shisa)", m_ss_f1: "오키나와 사자 동상(시사)을 모티브로 한 캐릭터. '우레시사~'가 입버릇입니다.", m_ss_f2: "라멘 갑옷 씨 밑에서 일하는 성실하고 똑똑한 '슈퍼 알바생'입니다.",
+                m_mm_title: "모몽가 (Momonga)", m_mm_f1: "하얗고 복슬복슬한 꼬리를 가진 녀석. 늘 자신이 귀엽다는 것을 어필하며 칭찬받기를 원합니다.", m_mm_f2: "가끔은 뻔뻔하지만 미워할 수 없는 매력의 소유자로 이야기의 재미를 더합니다.",
+                gacha_res_sub: "오늘 당신과 함께할 메이트는?", gacha_lucky: "🍀 럭키 아이템: ", gacha_res_btn: "확인 완료!"
+            },
+            en: {
+                proj_tag: "PROJECT: I AM",
+                main_title: "Introducing My Favorite Characters 🐾",
+                main_desc: "Meet the characters who bring small healing and joy to my busy daily life. <br class='hidden md:block'>Receive warm energy from Nongdamgom and Chiikawa's friends!",
+                sec1_title: "🐻 Nongdamgom Characters",
+                ndg_name: "Nongdamgom", ndg_sub: "Icon of a glutton and relaxed mind",
+                pug_name: "Pug Senior", pug_sub: "Reliable senior with cool sunglasses",
+                grk_name: "Croquette", grk_sub: "Crispy outside, soft inside! Timid but warm",
+                sec2_title: "🐹 Chiikawa Characters",
+                cw_name: "Chiikawa", cw_sub: "Small, cute, and hard-working",
+                hw_name: "Hachiware", hw_sub: "Cat full of positive energy",
+                us_name: "Usagi", us_sub: "Urara! Free spirit",
+                kn_name: "Kani (Bookstore)", kn_sub: "Shy used bookstore owner",
+                km_name: "Kurimanju", km_sub: "Haa~ Gourmet who loves snacks",
+                rk_name: "Rakko", rk_sub: "Rank 1 hero weak to sweets",
+                ss_name: "Shisa", ss_sub: "Ureshisa~ Smart super part-timer",
+                mm_name: "Momonga", mm_sub: "Cutie who loves compliments",
+                gacha_title: "Today's Chiikawa Fortune! 🔮",
+                gacha_desc: "Click the button to check your perfect character and lucky message for today.",
+                gacha_btn: "Start Fortune Gacha!",
+                gacha_rolling: "Drawing...!",
+                footer: "&copy; 2026 I AM Project. All cute rights reserved.",
+                m_f1: "Features:", m_f2: "Charm Point:",
+                m_ndg_title: "Nongdamgom", m_ndg_f1: "A relaxed white bear who loves eating the most. Sometimes acts unpredictably.", m_ndg_f2: "True reactions when eating delicious food! The best healing character for small daily joys.",
+                m_pug_title: "Pug Senior", m_pug_f1: "A hip dog wearing sunglasses. Like a reliable older brother to Nongdamgom.", m_pug_f2: "Despite his chic look, he has a deep heart and is secretly playful.",
+                m_grk_title: "Croquette", m_grk_f1: "A fairy-like creature wearing crispy fried batter. Its head sometimes crumbles.", m_grk_f2: "Extremely timid; hiding in corners stimulates protective instincts.",
+                m_cw_title: "Chiikawa", m_cw_f1: "A small cute guy. Mostly cries 'Wa!' or 'Hueeng'. Scared easily and cries a lot.", m_cw_f2: "Timid but shows strong courage when friends are in danger. Soft outside, strong inside!",
+                m_hw_title: "Hachiware", m_hw_f1: "A fluent speaking cat. Lives in a cave and saves money diligently despite being poor.", m_hw_f2: "Always leads friends with a positive mindset in any difficult situation.",
+                m_us_title: "Usagi", m_us_f1: "A free-spirited rabbit screaming 'Urara!'. Very athletic and active in battles.", m_us_f2: "Surprises friends with eccentricity but hard carries in crises with great skills.",
+                m_kn_title: "Kani", m_kn_f1: "Cute appearance with a crab headband. Promoted from an extra to a main character!", m_kn_f2: "Very shy but takes warm care of friends like Momonga.",
+                m_km_title: "Kurimanju", m_km_f1: "Looks like a chestnut bun. Enjoys snacks and drinks with an 'old man' vibe.", m_km_f2: "The refreshing 'Haa-!' reaction after a big gulp of a drink!",
+                m_rk_title: "Rakko", m_rk_f1: "Sea otter with a cross scar. Rank 1 subjugator admired by everyone.", m_rk_f2: "Exudes massive charisma but is secretly a huge lover of sweet desserts!",
+                m_ss_title: "Shisa", m_ss_f1: "Motif from Okinawa lion statues. 'Ureshisa~' is his catchphrase.", m_ss_f2: "A hard-working and smart 'super part-timer' working at the ramen shop.",
+                m_mm_title: "Momonga", m_mm_f1: "A fluffy creature who constantly shows off its cuteness to get compliments.", m_mm_f2: "Sometimes shameless but possesses an undeniable charm that adds fun to the story.",
+                gacha_res_sub: "Your Mate for Today?", gacha_lucky: "🍀 Lucky Item: ", gacha_res_btn: "Awesome!"
+            }
+        };
 
-        // 모달 열기 함수
+        // 가챠 다국어 데이터
+        const gachaData = {
+            ko: [
+                { name: "치이카와", image: "https://i.postimg.cc/C5XjDV5z/chiikawa1.jpg", color: "#fbcfe8", message: "작지만 확실한 용기가 솟아나는 날! 조금 두려워도 한 발짝 내디뎌보면 좋은 결과가 있을 거예요.", item: "달콤한 푸딩 🍮" },
+                { name: "하치와레", image: "https://i.postimg.cc/Zn2r3hn3/hachiware1.jpg", color: "#bfdbfe", message: "어떻게든 될 거야! 긍정적인 에너지가 가득해서 주변 사람들에게도 큰 위안을 줄 수 있는 완벽한 하루입니다.", item: "필름 카메라 📷" },
+                { name: "우사기", image: "https://i.postimg.cc/C5XjDV5H/usagi1.jpg", color: "#fef08a", message: "우라라라라!! 넘치는 활력으로 텐션업! 평소에 미뤄둔 일이 있다면 오늘이 바로 순식간에 끝낼 수 있는 타이밍입니다.", item: "타코야끼 🐙" },
+                { name: "농담곰", image: "https://i.postimg.cc/1X2p6ZXN/damgom1.jpg", color: "#fef08a", message: "복잡한 생각은 잠시 내려놓고, 세상에서 제일 맛있는 걸 먹으러 가세요. 소소한 행복이 당신을 기다립니다.", item: "따끈한 국밥 🍚" },
+                { name: "퍼그 선배", image: "https://i.postimg.cc/x8hKHS8K/pugg1.jpg", color: "#e5e7eb", message: "오늘은 당신의 힙한 감각과 센스가 돋보이는 날. 여유로운 태도로 사람들의 이목을 사로잡을 수 있어요.", item: "멋진 선글라스 🕶️" },
+                { name: "고로케", image: "https://i.postimg.cc/nrgv7trD/goroke1.jpg", color: "#fed7aa", message: "겉은 바삭, 속은 촉촉! 다소 소심해지더라도 당신의 따뜻한 진심은 상대방에게 온전히 전해질 것입니다.", item: "케첩 뿌린 튀김 🍤" },
+                { name: "카니", image: "https://i.postimg.cc/J0vbJW0X/kani1.jpg", color: "#fecaca", message: "조용한 휴식이 필요한 하루. 좋아하는 책이나 만화책을 읽으며 마음의 양식을 채워보는 건 어떨까요?", item: "오래된 동화책 📚" },
+                { name: "쿠리만쥬", image: "https://i.postimg.cc/2yM4vfyh/kurimaju1.jpg", color: "#fde68a", message: "하아~! 오늘 하루 일과를 마치고 시원한 음료수 한 잔과 맛있는 안주로 스스로에게 보상을 주세요.", item: "시원한 콜라와 오징어 🦑" },
+                { name: "랏코", image: "https://i.postimg.cc/MHNyR8H7/rakko1.jpg", color: "#cbd5e1", message: "어려운 과제가 주어져도 멋지게 해결할 수 있는 능력이 솟아납니다. 해결 후엔 꼭 달콤한 디저트를 드세요!", item: "딸기 파르페 🍨" },
+                { name: "시사", image: "https://i.postimg.cc/fypxXhy7/sisa1.jpg", color: "#fed7aa", message: "우레시사~ 특유의 성실함과 똑똑함으로 주변 사람들에게 능력을 인정받게 되는 멋진 날입니다.", item: "따뜻한 라멘 한 그릇 🍜" },
+                { name: "모몽가", image: "https://placehold.co/400x400/e9d5ff/9333ea?text=Momonga", color: "#e9d5ff", message: "오늘은 마음껏 귀여운 척을 해봐도 괜찮아요! 당신의 넘치는 애교가 사람들의 마음을 몽글몽글하게 만듭니다.", item: "복숭아 사탕 🍑" }
+            ],
+            en: [
+                { name: "Chiikawa", image: "https://i.postimg.cc/C5XjDV5z/chiikawa1.jpg", color: "#fbcfe8", message: "A day where small but certain courage springs up! Take a step forward even if you're a bit scared.", item: "Sweet Pudding 🍮" },
+                { name: "Hachiware", image: "https://i.postimg.cc/Zn2r3hn3/hachiware1.jpg", color: "#bfdbfe", message: "It will work out somehow! A perfect day full of positive energy to comfort people around you.", item: "Film Camera 📷" },
+                { name: "Usagi", image: "https://i.postimg.cc/C5XjDV5H/usagi1.jpg", color: "#fef08a", message: "Urara! Tension up with overflowing vitality! Great timing to finish any postponed work.", item: "Takoyaki 🐙" },
+                { name: "Nongdamgom", image: "https://i.postimg.cc/1X2p6ZXN/damgom1.jpg", color: "#fef08a", message: "Put aside complex thoughts and go eat the most delicious food. Small happiness awaits you.", item: "Hot Rice Soup 🍚" },
+                { name: "Pug Senior", image: "https://i.postimg.cc/x8hKHS8K/pugg1.jpg", color: "#e5e7eb", message: "Your hip sense stands out today. You can catch people's attention with a relaxed attitude.", item: "Cool Sunglasses 🕶️" },
+                { name: "Croquette", image: "https://i.postimg.cc/nrgv7trD/goroke1.jpg", color: "#fed7aa", message: "Crispy outside, soft inside! Even if you feel timid, your warm sincerity will be fully delivered.", item: "Fried Snack with Ketchup 🍤" },
+                { name: "Kani", image: "https://i.postimg.cc/J0vbJW0X/kani1.jpg", color: "#fecaca", message: "A day needing quiet rest. How about reading your favorite books or comics to feed your mind?", item: "Old Fairy Tale Book 📚" },
+                { name: "Kurimanju", image: "https://i.postimg.cc/2yM4vfyh/kurimaju1.jpg", color: "#fde68a", message: "Haa~! Reward yourself with a cool drink and delicious snacks after finishing today's work.", item: "Cold Cola & Squid 🦑" },
+                { name: "Rakko", image: "https://i.postimg.cc/MHNyR8H7/rakko1.jpg", color: "#cbd5e1", message: "The ability to wonderfully solve difficult tasks arises. Be sure to eat sweet desserts afterwards!", item: "Strawberry Parfait 🍨" },
+                { name: "Shisa", image: "https://i.postimg.cc/fypxXhy7/sisa1.jpg", color: "#fed7aa", message: "Ureshisa~ A wonderful day where your sincerity and smartness will be acknowledged by others.", item: "Warm Ramen 🍜" },
+                { name: "Momonga", image: "https://placehold.co/400x400/e9d5ff/9333ea?text=Momonga", color: "#e9d5ff", message: "It's okay to act as cute as you want today! Your overflowing charm will melt people's hearts.", item: "Peach Candy 🍑" }
+            ]
+        };
+
+        let currentLang = 'ko';
+
+        // 언어 변경 함수
+        function updateLanguage() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(translations[currentLang][key]) {
+                    el.innerHTML = translations[currentLang][key];
+                }
+            });
+            langToggle.innerText = currentLang === 'ko' ? '🌐 EN' : '🌐 KO';
+        }
+
+        langToggle.addEventListener('click', () => {
+            currentLang = currentLang === 'ko' ? 'en' : 'ko';
+            updateLanguage();
+        });
+
+        // 모달 열기/닫기
         function openModal(type) {
             overlay.classList.remove('hidden');
             overlay.classList.add('flex');
             
-            // 모든 모달 숨기기
             Object.values(modals).forEach(modal => {
                 if(modal) modal.classList.add('hidden');
             });
 
-            // 선택된 모달 보이기
             if (modals[type]) {
                 modals[type].classList.remove('hidden');
             }
         }
 
-        // 모달 닫기 함수
         function closeModal() {
             overlay.classList.add('hidden');
             overlay.classList.remove('flex');
-            
             Object.values(modals).forEach(modal => {
                 if(modal) modal.classList.add('hidden');
             });
         }
 
-        // 오버레이 클릭 시 모달 닫기
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
                 closeModal();
             }
         });
 
-        // 가챠 실행 로직
+        let isGachaRolling = false;
+
+        // 운세 뽑기 실행 로직
         function rollGacha() {
             if (isGachaRolling) return;
             isGachaRolling = true;
 
-            // 버튼 비활성화 및 텍스트 변경
             gachaBtn.disabled = true;
-            gachaBtn.innerText = "두근두근 뽑는 중...!";
+            gachaBtn.innerText = translations[currentLang].gacha_rolling;
             gachaBtn.classList.add('opacity-70', 'cursor-not-allowed');
-
-            // 상자 흔들기 애니메이션 추가
             gachaBox.classList.add('animate-shake');
 
-            // 1.5초 후 결과 표시
             setTimeout(() => {
-                // 애니메이션 제거
                 gachaBox.classList.remove('animate-shake');
                 
-                // 랜덤 데이터 선택
-                const randomIndex = Math.floor(Math.random() * gachaData.length);
-                const result = gachaData[randomIndex];
+                // 현재 언어에 맞는 데이터에서 랜덤 선택
+                const currentDataArray = gachaData[currentLang];
+                const randomIndex = Math.floor(Math.random() * currentDataArray.length);
+                const result = currentDataArray[randomIndex];
 
-                // 이미지 로드 및 데이터 바인딩
                 gachaImage.src = result.image;
                 gachaImage.classList.remove('hidden');
                 
@@ -505,22 +596,18 @@
                 gachaMessage.innerText = `"${result.message}"`;
                 gachaItem.innerText = result.item;
                 
-                // 모달 테두리 색상 동적 변경
                 modalGachaResult.style.borderColor = result.color;
 
-                // 모달 띄우기
                 openModal('gacha');
 
-                // 버튼 상태 복구
                 gachaBtn.disabled = false;
-                gachaBtn.innerText = "운세 뽑기 시작!";
+                gachaBtn.innerText = translations[currentLang].gacha_btn;
                 gachaBtn.classList.remove('opacity-70', 'cursor-not-allowed');
                 
                 isGachaRolling = false;
             }, 1500);
         }
 
-        // 가챠 버튼 이벤트 리스너
         gachaBtn.addEventListener('click', rollGacha);
         gachaBox.addEventListener('click', rollGacha);
     </script>
